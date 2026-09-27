@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="내 PC에서만 PDF에 출력자 정보를 워터마크로 삽입합니다." />
+  <title>출력 흔적 · PDF 워터마크</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%231c4e80' d='M8 5h13l5 5v17H8z'/%3E%3Cpath fill='white' d='M20 5v6h6M11 17h12v2H11zm0 5h9v2h-9z'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <header>
+      <div class="eyebrow">LOCAL PDF MARKER</div>
+      <h1>출력 흔적</h1>
+      <p>PDF 모든 페이지에 출력자 정보를 반복 삽입합니다.</p>
+    </header>
+
+    <section class="workspace" aria-label="PDF 워터마크 작업 공간">
+      <div class="panel upload-panel">
+        <label class="drop-zone" id="dropZone" for="fileInput">
+          <span class="drop-icon">↓</span>
+          <strong>PDF를 여기에 놓으세요</strong>
+          <span>또는 파일 선택 · 여러 개 가능</span>
+          <input id="fileInput" type="file" accept="application/pdf,.pdf" multiple hidden />
+        </label>
+        <div class="file-summary" id="fileSummary" aria-live="polite">아직 선택된 PDF가 없습니다.</div>
+        <button class="text-button" id="clearFiles" type="button" disabled>선택 비우기</button>
+      </div>
+
+      <div class="panel details-panel">
+        <div class="panel-heading"><span>01</span><h2>출력자 정보</h2></div>
+        <label>출력자 이름<input id="printerName" maxlength="60" placeholder="예: 김민지" autocomplete="name" /></label>
+        <label>IP 주소
+          <div class="input-row"><input id="ipAddress" maxlength="80" placeholder="로컬 IP 확인 중…" /><button id="refreshIp" type="button" title="로컬 IP 다시 확인">↻</button></div>
+          <small>공개 IP 확인 요청만 전송하며, PDF 파일·출력자 정보는 외부로 전송하지 않습니다. 필요 시 직접 수정하세요.</small>
+        </label>
+        <label>기록 시각<input id="timestamp" readonly /></label>
+      </div>
+
+      <div class="panel preview-panel">
+        <div class="panel-heading"><span>02</span><h2>삽입 방식</h2></div>
+        <div class="preview-toolbar" aria-label="미리보기 확대 축소">
+          <span id="previewPage">PDF를 선택하세요</span>
+          <div><button id="zoomOut" type="button" aria-label="축소">−</button><output id="zoomLevel">100%</output><button id="zoomIn" type="button" aria-label="확대">+</button></div>
+        </div>
+        <div class="watermark-sample" id="previewViewport" aria-label="워터마크 PDF 미리보기">
+          <div class="preview-empty" id="previewEmpty">PDF를 선택하면<br>워터마크 결과를 보여드립니다.</div>
+          <iframe id="previewFrame" title="워터마크 PDF 미리보기" hidden></iframe>
+          <div class="preview-watermark" id="previewWatermark" hidden></div>
+        </div>
+        <p class="hint">첫 페이지 미리보기 · 각 페이지 전체에 작은 정보 블록이 반복됩니다.</p>
+      </div>
+    </section>
+
+    <section class="action-bar">
+      <div><strong id="readyCount">0개</strong>의 PDF가 준비됨 <span>· 원본은 업로드되지 않습니다</span></div>
+      <div class="actions">
+        <button id="downloadEach" class="button secondary" type="button" disabled>개별 PDF 다운로드</button>
+        <button id="downloadZip" class="button primary" type="button" disabled>ZIP으로 일괄 다운로드</button>
+      </div>
+    </section>
+    <p class="status" id="status" aria-live="polite"></p>
+  </main>
+  <script src="vendor/pdf-lib.min.js"></script>
+  <script src="vendor/fontkit.umd.min.js"></script>
+  <script src="vendor/jszip.min.js"></script>
+  <script src="assets/malgun-font.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
